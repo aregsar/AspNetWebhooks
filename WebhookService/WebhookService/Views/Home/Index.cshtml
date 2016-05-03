@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    ViewBag.SubscriptionUrl = Request.Url.Scheme + "://" + Request.Url.Authority + "/api/webhooks/incoming/custom";
+}
+
+<p>
+    Webhook subscription URL:<br />
+    @ViewBag.SubscriptionUrl
+</p>
+<form onsubmit="return subscribe()">
+    Subscribe to all events <input type="submit" value="submit">
+</form>
+<form onsubmit="return unsubscribe()">
+    Unsubscribe from all events <input type="submit" value="submit">
+</form>
+<form onsubmit="return notifymvc()">
+    Trigger notification through MVC controller <input type="submit" value="submit">
+</form>
+<form onsubmit="return notifyapi()">
+    Trigger notification through Web API controller <input type="submit" value="submit">
+</form>
+
+
+@section scripts{   
+<script>
+    function subscribe() {
+        $.ajax({
+            type: "POST",
+            url: "/api/webhooks/registrations",
+            data: JSON.stringify({
+                WebHookUri: "@ViewBag.SubscriptionUrl",
+                Secret: "12345678901234567890123456789012",
+                Description: "Registering for webhooks"
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data, status) { alert(data.Message ? data.Message : status); },
+            error: function (errMsg) { alert(errMsg.responseJSON.Message); }
+        });
+        return false;
+    }
+
+    function unsubscribe() {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/webhooks/registrations",
+            success: function (data, status) { alert(data.Message ? data.Message : status); },
+            error: function (errMsg) { alert(errMsg.responseJSON.Message); }
+        });
+        return false;
+    }
+
+    function notifymvc() {
+        $.post("/message/create",
+        { message: "abcd" },
+        function (data, status) { alert("Data: " + data + "\nStatus: " + status); });
+        return false;
+    }
+
+    function notifyapi() {
+        $.post("/api/messageapi",
+        { message: "abcd"},
+        function (data, status) { alert("Data: " + data + "\nStatus: " + status); });
+        return false;
+    }
+</script>
+}
