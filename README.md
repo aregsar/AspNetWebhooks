@@ -1,6 +1,4 @@
-# WebhookService - A projects that demonstrates a webhook server and a webhook client 
-
-# using the  ASP.NET webhooks framework 
+#WebhookService - demo project that demonstrates setting up a custom webhook server and client using the ASP.NET webhooks framework 
 
 For more details on asp.net webhooks See:
 
